@@ -1,6 +1,6 @@
-# <div align="center">AutoAnnotator<br>ACL 2025 (Main)</div>
+# <div align="center">AutoAnnotator<br>ACL 2025 </div>
 <div align="center">
-    ByteDance Seed
+
 
 <br>
 
@@ -16,9 +16,7 @@
 </div>
 
 ## Introduction
-
-We introduce PaSa, an advanced **Pa**per **S**e**a**rch agent powered by large language models. PaSa can autonomously make a series of decisions, including invoking search tools, reading papers, and selecting relevant references, to ultimately obtain comprehensive and accurate results for complex scholarly queries. We optimize PaSa using reinforcement learning with a synthetic dataset, AutoScholarQuery, which includes 35k fine-grained academic queries and corresponding papers sourced from top-tier AI conference publications. Additionally, we develop RealScholarQuery, a benchmark collecting real-world academic queries to assess PaSa performance in more realistic scenarios. Despite being trained on synthetic data, PaSa significantly outperforms existing baselines on RealScholarQuery, including Google, Google Scholar, Google with GPT-4 for paraphrased queries, chatGPT (search-enabled GPT-4o), GPT-o1, and PaSa-GPT-4o (PaSa implemented by prompting GPT-4o). Notably, PaSa-7B surpasses the best Google-based baseline, Google with GPT-4o, by 37.78% in recall@20 and 39.90% in recall@50. It also exceeds PaSa-GPT-4o by 30.36% in recall and 4.25% in precision.
-
+Although the annotation paradigm based on Large Language Models (LLMs) has made significant breakthroughs in recent years, its actual deployment still has two core bottlenecks: first, the cost of calling commercial APIs in largescale annotation is very expensive; second, in scenarios that require fine-grained semantic understanding, such as sentiment classification and toxicity classification, the annotation accuracy of LLMs is even lower than that of Small Language Models (SLMs) dedicated to this field. To address these problems, we propose a new paradigm of multi-model cooperative annotation and design a fully automatic annotation framework AutoAnnotator based on this. Specifically, AutoAnnotator consists of two layers. The upper-level meta-controller layer uses the generation and reasoning capabilities of LLMs to select SLMs for annotation, automatically generate annotation code and verify difficult samples; the lower-level task-specialist layer consists of multiple SLMs that perform annotation through multi-model voting. In addition, we use the difficult samples obtained by the secondary review of the metacontroller layer as the reinforcement learning set and fine-tune the SLMs in stages through a continual learning strategy, thereby improving the generalization of SLMs. Extensive experiments show that AutoAnnotator outperforms existing open-source/API LLMs in zero-shot, one-shot, CoT, and majority voting settings. Notably, AutoAnnotator reduces the annotation cost by 74.15% compared to directly annotating with GPT-3.5-turbo, while still improving the accuracy by 6.21%.
 ## Quick Start
 
 You can prepare a detailed description of your academic search needs, and search for papers on [https://pasa-agent.ai](https://pasa-agent.ai)
@@ -28,8 +26,12 @@ You can prepare a detailed description of your academic search needs, and search
 ## Architecture
 ![architecture](src/architecture.png)
 
-The PaSa system consists of two LLM agents, Crawler and Selector. The Crawler processes the user query and can access papers from the paper queue. It can autonomously invoke the search tool, expand citations, or stop processing of the current paper. All papers collected by the Crawler are appended to the paper queue. The Selector reads each paper in the paper queue to determine whether it meets the criteria specified in the user query.
-
+AutoAnnotator consists of two layers: a meta-controller
+layer and a task-specialist layer. The meta-controller layer, powered by LLMs, is responsible for selecting
+appropriate SLMs from Hugging Face, automatically generating the code required for the entire annotation process
+and performing secondary review on samples that are difficult for SLMs. The task-specialist layer comprises the
+selected SLMs by the meta-controller layer. SLMs use a majority voting mechanism to annotate samples and
+periodically use difficult samples from LLMs for secondary review to continuously update themselves.
 ## Dataset
 
 All the datasets are available at [pasa-dataset](https://huggingface.co/datasets/CarlanLark/pasa-dataset)
