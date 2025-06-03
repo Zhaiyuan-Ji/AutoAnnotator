@@ -1,4 +1,4 @@
-# <div align="center">PaSa: An LLM Agent for Comprehensive Academic Paper Search<br>ACL 2025 (Main)</div>
+# <div align="center">AutoAnnotator<br>ACL 2025 (Main)</div>
 <div align="center">
     ByteDance Seed
 
