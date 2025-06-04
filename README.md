@@ -17,11 +17,12 @@
 
 ## Introduction
 Although the annotation paradigm based on Large Language Models (LLMs) has made significant breakthroughs in recent years, its actual deployment still has two core bottlenecks: first, the cost of calling commercial APIs in largescale annotation is very expensive; second, in scenarios that require fine-grained semantic understanding, such as sentiment classification and toxicity classification, the annotation accuracy of LLMs is even lower than that of Small Language Models (SLMs) dedicated to this field. To address these problems, we propose a new paradigm of multi-model cooperative annotation and design a fully automatic annotation framework AutoAnnotator based on this. Specifically, AutoAnnotator consists of two layers. The upper-level meta-controller layer uses the generation and reasoning capabilities of LLMs to select SLMs for annotation, automatically generate annotation code and verify difficult samples; the lower-level task-specialist layer consists of multiple SLMs that perform annotation through multi-model voting. In addition, we use the difficult samples obtained by the secondary review of the metacontroller layer as the reinforcement learning set and fine-tune the SLMs in stages through a continual learning strategy, thereby improving the generalization of SLMs. Extensive experiments show that AutoAnnotator outperforms existing open-source/API LLMs in zero-shot, one-shot, CoT, and majority voting settings. Notably, AutoAnnotator reduces the annotation cost by 74.15% compared to directly annotating with GPT-3.5-turbo, while still improving the accuracy by 6.21%.
-## Quick Start
-
-You can prepare a detailed description of your academic search needs, and search for papers on [https://pasa-agent.ai](https://pasa-agent.ai)
+## Project Exhibition
+The video below is a demonstration of the operation of this project.
 
 [![Watch the video](src/cover.png)](https://www.youtube.com/watch?v=LhXCKZyriNs)
+
+## Quick Start
 
 ## Architecture
 ![architecture](src/architecture.png)
@@ -32,50 +33,42 @@ appropriate SLMs from Hugging Face, automatically generating the code required f
 and performing secondary review on samples that are difficult for SLMs. The task-specialist layer comprises the
 selected SLMs by the meta-controller layer. SLMs use a majority voting mechanism to annotate samples and
 periodically use difficult samples from LLMs for secondary review to continuously update themselves.
-## Dataset
+## Descriptions of the models choosed by LLM in the article and the datasets used for the experiments.
+The models selected by the LLM in the article based on the type of annotation task.
 
-All the datasets are available at [pasa-dataset](https://huggingface.co/datasets/CarlanLark/pasa-dataset)
+![architecture](src/model.png)
 
-### AutoScholarQuery
+Description of the datasets used in the article
 
-![architecture](src/autos.png)
+![architecture](src/dataset.png)
 
-AutoScholarQuery is a synthetic but high-quality dataset of academic queries and related papers, specifically curated for the AI field.
-
-### RealScholarQuery
-
-![architecture](src/reals.png)
-
-RealScholarQuery is a test dataset consisting of 50 real-world and fine-grained research queries raised by AI researchers to use the system. The answers to each query are identified as comprehensively as possible by the professional annotators through various retrieval methods.
+All datasets come from Hugging Face.The details are available at [src/dataset]
 
 ## Experiments
 
 ### Baselines
 
-We evaluate our paper search agent on both the test set of AutoScholarQuery and RealScholarQuery. We compare PaSa-7b against the following baselines:
+We evaluate AutoAnnotator on  multiple datasets. We compare AutoAnnotator against the following baselines:
 
-- **Google.** Use Google to search the query directly.
+- **SLMs Only:** Only use small models for data annotation.
 
-- **Google Scholar.** Queries are submitted directly to Google Scholar.
 
-- **Google with GPT-4o.** We first employ GPT-4o to paraphrase the scholar query. The paraphrased query is then searched on Google.
+- **Zero-shot:** Directly use LLM to label completely new, unseen categories of data.
 
-- **ChatGPT.** We submit the scholar query to ChatGPT, powered by search-enabled GPT-4o. Due to the need for manual query submission, we evaluate only 100 randomly sampled instances from the AutoScholarQuery test set.
 
-- **GPT-o1.** Prompt GPT-o1 to process the scholar query.
+- **One-shot:** Only provide the LLM with one or very few representative samples as a reference for labeling.
 
-- **PaSa-GPT-4o.** Prompt GPT-4o within the PaSa framework. It can perform multiple searches, paper reading, and citation network crawling. 
+
+- **CoT:** Add a CoT prompt “Let’s think step by step like an operations research expert.” behind the zero-shot prompt. Make LLM perform chain thinking.
+
+
+- **LLMs Vote:** Using multiple LLMs for data annotation, with a majority vote for decision-making. 
 
 ### Main Results
 
-![results](src/results.png)
+![results](src/main-result.png)
 
-As shown in Table 5, PaSa-7b outperforms all baselines on AutoScholarQuery test set. Specifically, compared to the strongest baseline, PaSa-GPT-4o, PaSa-7b demonstrates a 9.64% improvement in recall with comparable precision. Moreover, the recall of the Crawler in PaSa-7b is 3.66% higher than that in PaSa-GPT-4o. When compared to the best Google-based baseline, Google with GPT-4o, PaSa-7b achieves an improvement of 33.80%, 38.83% and 42.64% in Recall@20, Recall@50 and Recall@100, respectively.
-
-We observe that using multiple ensembles of Crawler during inference can improve performance. Specifically, running Crawler twice during inference increased the Crawler recall by 3.34% on AutoScholarQuery, leading to the final recall improvement by 1.51%, with precision remaining similar. 
-
-To evaluate PaSa in a more realistic setting, we assess its effectiveness on RealScholarQuery. As illustrated in Table 6, PaSa-7b exhibits a greater advantage in real-world academic search scenarios. Compared to PaSa-GPT-4o, PaSa-7b achieves improvements of 30.36% in recall and 4.25% in precision. Against the best Google-based baseline on RealScholarQuery, Google with GPT-4o, PaSa-7b outperforms Google by 37.78%, 39.90%, and 39.83% in recall@20, recall@50 and recall@100, respectively. Additionally, the PaSa-7b-ensemble further enhances crawler recall by 4.32%, contributing to an overall 3.52% improvement in the recall of the entire agent system.
-
+Comparison of the proposed AutoAnnotator with existing methods on different toxicity and sentiment annotation tasks. It is worth noting that the SLM1 for sentiment classification and the SLM1 for toxicity classification are not the same model. 
 ## Run Locally
 
 ### Data Preparation
