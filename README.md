@@ -5,7 +5,6 @@
 <br>
 
 [![arXiv](https://img.shields.io/badge/arXiv-2501.10120-b31b1b.svg)](https://arxiv.org/abs/2501.10120)
-[![Demo](https://img.shields.io/badge/demo-pasa--agent-blue)](https://pasa-agent.ai)
 [![Model](https://img.shields.io/badge/model_HF-crawler-green)](https://huggingface.co/bytedance-research/pasa-7b-crawler)
 [![Model](https://img.shields.io/badge/model_HF-selector-darkgreen)](https://huggingface.co/bytedance-research/pasa-7b-selector)
 [![Data](https://img.shields.io/badge/data-pasa--dataset-F9D371)](https://huggingface.co/datasets/CarlanLark/pasa-dataset)
@@ -89,39 +88,6 @@ To explore the impact of the number of hard samples used for continuous fine-tun
 Visualization of representative samples correctly annotated by AutoAnnotator but misclassified by other closed-source LLMs
 ## Run Locally
 
-### Data Preparation
-
-Download dataset from [pasa-dataset](https://huggingface.co/datasets/CarlanLark/pasa-dataset) and save it in the data folder.
-
-```
-pasa/data
-├── AutoScholarQuery
-
-│   ├── dev.jsonl
-│   ├── test.jsonl
-│   └── train.jsonl
-├── paper_database
-│   ├── cs_paper_2nd.zip
-│   └── id2paper.json
-├── RealScholarQuery
-│   └── test.jsonl
-├── sft_crawler
-│   └── train.jsonl
-└── sft_selector
-    ├── test.jsonl
-    └── train.jsonl
-```
-
-### Model Preparation
-
-Download model checkpoints [pasa-7b-crawler](https://huggingface.co/bytedance-research/pasa-7b-crawler) and [pasa-7b-selector](https://huggingface.co/bytedance-research/pasa-7b-selector) and save it in the checkpoints folder.
-
-```
-pasa/checkpoints
-├── pasa-7b-crawler
-└── pasa-7b-selector
-```
-
 ### Run Pasa
 
 ```bash
@@ -150,107 +116,6 @@ System Prompt for Data Annotation
 Prompt for Data Annotation
 
 ![results](src/prompt2.png)
-
-### Selector SFT Training
-
-```bash
-cd trl
-accelerate launch \
-    --config_file examples/accelerate_configs/deepspeed_zero3.yaml \ 
-    --num_processes 8 \
-    --main_process_port 2501 \
-    --machine_rank 0 \
-    --main_process_ip 127.0.0.1 \
-    examples/scripts/sft.py \
-    --model_name_or_path Qwen2.5-7B-Instruct \
-    --dataset_name ../data/sft_selector/train.jsonl \
-    --learning_rate 1.0e-5 \
-    --num_train_epochs 1 \
-    --bf16 True \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 1 \
-    --gradient_checkpointing \
-    --logging_steps 50 \
-    --save_steps 2000 \
-    --max_seq_length 1024 \
-    --weight_decay 0.01 \
-    --warmup_ratio 0.01 \
-    --output_dir ../results/sft_selector \
-    --attn_implementation "flash_attention_2"
-```
-
-### Crawler SFT Training
-```bash
-cd trl
-accelerate launch \
-    --config_file examples/accelerate_configs/deepspeed_zero3.yaml \ 
-    --num_processes 8 \
-    --main_process_port 2501 \
-    --machine_rank 0 \
-    --main_process_ip 127.0.0.1 \
-    examples/scripts/sft.py \
-    --model_name_or_path Qwen2.5-7B-Instruct \
-    --dataset_name ../data/sft_crawler/train.jsonl \
-    --learning_rate 1.0e-5 \
-    --num_train_epochs 1 \
-    --bf16 True \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 1 \
-    --gradient_checkpointing \
-    --logging_steps 50 \
-    --save_steps 2000 \
-    --max_seq_length 1024 \
-    --weight_decay 0.01 \
-    --warmup_ratio 0.01 \
-    --output_dir ../results/sft_crawler \
-    --attn_implementation "flash_attention_2"
-```
-
-### Crawler PPO Training
-
-**Before Training:**
-
-1. You need to first apply for a Google Search API key at [serper.dev](https://serper.dev/), and replace the 'your google keys' in `trl/custom_agent/search_tools.py`.
-2. If you set `use_selector=True`, you need to deploy additional selector models, which can be accessed during training. Please modify `call_selector` function in `trl/custom_agent/utils.py` to call the selector and get the select results.
-
-```bash
-cd trl
-accelerate launch \
-    --config_file examples/accelerate_configs/deepspeed_zero3_multi.yaml \
-    --main_process_port 2501 \
-    --machine_rank 0 \
-    --main_process_ip 127.0.0.1 \
-    examples/scripts/ppo/ppo_tldr.py \
-    --dataset_name ../data/AutoScholarQuery/train.jsonl \
-    --dataset_test_split validation \
-    --output_dir ../results/ppo_crawler \
-    --learning_rate 1e-6 \
-    --per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 4 \
-    --total_episodes 16000 \
-    --paper_db ../data/paper_database/cs_paper_2nd.zip \
-    --paper_id ../data/paper_database/id2paper.json \
-    --model_name_or_path ../output/sft_crawler \
-    --sft_model_path ../output/sft_crawler \
-    --reward_model_path ../output/sft_crawler \
-    --local_rollout_forward_batch_size 4 \
-    --num_sample_generations 0 \
-    --attn_implementation "flash_attention_2" \
-    --response_length 1024 \
-    --stop_token eos \
-    --gamma1 0.1 \
-    --save_steps 10 \
-    --rounds 3 \
-    --use_vm True \
-    --use_selector True \
-    --vf_coef 10.0 \
-    --expand_select_score 1.5 \
-    --expand_cost 0.1 \
-    --search_select_score 1.5 \
-    --search_cost 0.1 \
-    --num_ppo_epochs 2 \
-    --kl_coef 0.1
-```
 
 ## Citation
 Please cite us as:
