@@ -1,4 +1,4 @@
-# <div align="center">AutoAnnotator<br>ACL 2025 </div>
+# <div align="center">AutoAnnotator<br> 2025 </div>
 <div align="center">
 
 
