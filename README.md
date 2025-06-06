@@ -19,7 +19,7 @@ Although the annotation paradigm based on Large Language Models (LLMs) has made 
 ## Project Exhibition
 The video below is a demonstration of the operation of this project.
 
-[![Watch the video](src/cover.png)](https://www.youtube.com/watch?v=LhXCKZyriNs)
+[![Watch the video](src/video.png)](https://youtu.be/-PpDYP4CcgQ)
 
 ## Quick Start
 
