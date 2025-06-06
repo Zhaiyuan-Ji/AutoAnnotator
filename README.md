@@ -4,10 +4,10 @@
 
 <br>
 
-[![arXiv](https://img.shields.io/badge/arXiv-2501.10120-b31b1b.svg)](https://arxiv.org/abs/2501.10120)
-[![Model](https://img.shields.io/badge/model_HF-crawler-green)](https://huggingface.co/bytedance-research/pasa-7b-crawler)
-[![Model](https://img.shields.io/badge/model_HF-selector-darkgreen)](https://huggingface.co/bytedance-research/pasa-7b-selector)
-[![Data](https://img.shields.io/badge/data-pasa--dataset-F9D371)](https://huggingface.co/datasets/CarlanLark/pasa-dataset)
+[![arXiv](https://img.shields.io/badge/arXiv-2501.10120-b31b1b.svg)]()
+[![Model](https://img.shields.io/badge/model_HF-crawler-green)]()
+[![Model](https://img.shields.io/badge/model_HF-selector-darkgreen)]()
+[![Data](https://img.shields.io/badge/data-pasa--dataset-F9D371)]()
 
   <a href="">
     <img src="src/Cover.png" width = "60%">
@@ -16,7 +16,7 @@
 
 ## Introduction
 Although the annotation paradigm based on Large Language Models (LLMs) has made significant breakthroughs in recent years, its actual deployment still has two core bottlenecks: first, the cost of calling commercial APIs in largescale annotation is very expensive; second, in scenarios that require fine-grained semantic understanding, such as sentiment classification and toxicity classification, the annotation accuracy of LLMs is even lower than that of Small Language Models (SLMs) dedicated to this field. To address these problems, we propose a new paradigm of multi-model cooperative annotation and design a fully automatic annotation framework AutoAnnotator based on this. Specifically, AutoAnnotator consists of two layers. The upper-level meta-controller layer uses the generation and reasoning capabilities of LLMs to select SLMs for annotation, automatically generate annotation code and verify difficult samples; the lower-level task-specialist layer consists of multiple SLMs that perform annotation through multi-model voting. In addition, we use the difficult samples obtained by the secondary review of the metacontroller layer as the reinforcement learning set and fine-tune the SLMs in stages through a continual learning strategy, thereby improving the generalization of SLMs. Extensive experiments show that AutoAnnotator outperforms existing open-source/API LLMs in zero-shot, one-shot, CoT, and majority voting settings. Notably, AutoAnnotator reduces the annotation cost by 74.15% compared to directly annotating with GPT-3.5-turbo, while still improving the accuracy by 6.21%.
-## Project Exhibition
+## Video demonstration
 The video below is a demonstration of the operation of this project.
 
 [![Watch the video](src/video.png)](https://youtu.be/-PpDYP4CcgQ)
