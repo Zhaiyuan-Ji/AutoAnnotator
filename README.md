@@ -10,7 +10,7 @@
 [![Data](https://img.shields.io/badge/data-pasa--dataset-F9D371)](https://huggingface.co/datasets/CarlanLark/pasa-dataset)
 
   <a href="">
-    <img src="src/pasa.png" width = "60%">
+    <img src="src/Cover.png" width = "60%">
   </a>
 </div>
 
