@@ -74,14 +74,7 @@ Comparison of the proposed AutoAnnotator with existing methods on different toxi
 
 To evaluate the annotation cost and efficiency of closed-source LLMs and AutoAnnotator, we conduct a quantitative analysis from three dimensions: computing resource consumption (the number of tokens and GPU memory usage), annotation time cost, and economic cost. All experiments are performed on NVIDIA A100 GPUs, and the annotation task scale is uniformly set to 1000 samples. We conduct experiments on Deepseek-V3, DeepseekR1, Minimax, GPT-3.5-turbo, GPT-4 and GPT-4o, respectively.
 
-### Ablation experiment
-To explore the impact of the number of SLMs on the annotation performance, we perform ablations on the JPP-Sentiment dataset using GPT-3.5-turbo as the meta-controller LLM.
 
-![results](src/xr1.png)
-
-To explore the impact of the number of hard samples used for continuous fine-tuning at each stage on the annotation performance, we perform ablations on the JPP-Sentiment dataset using GPT-3.5-turbo.
-
-![results](src/xr2.png)
 ### Representative samples
 ![results](src/example.png)
 
