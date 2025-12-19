@@ -55,7 +55,7 @@ def remove_extra_columns(input_excel_file, output_excel_file, sheet_name):
 
 
 # Initialize the OpenAI client with your API key and base URL.
-client = OpenAI(api_key="sk-5e0f127935dc46a0a5aa56fb50727345", base_url="https://api.deepseek.com")
+client = OpenAI(api_key="", base_url="https://api.deepseek.com")
 
 # 指定xlsx文件路径
 file_path = r'C:\Users\21888\Desktop\test\finetune_toxic.xlsx'
